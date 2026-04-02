@@ -16,8 +16,7 @@
             background-color: #f5f5f5;
             min-height: 100vh;
         }
-        
-        /* Главное меню (горизонтальное) */
+        /* меню */ 
         #main_menu {
             background-color: #333;
             padding: 15px;
@@ -39,6 +38,7 @@
             background-color: #777;
         }
         
+        /* выделенный пункт */
         #main_menu a.selected {
             background-color: #4CAF50;
             font-weight: bold;
@@ -48,13 +48,11 @@
             background-color: #45a049;
         }
         
-        /* Контейнер для контента */
         #container {
             display: flex;
             min-height: calc(100vh - 120px);
         }
         
-        /* Боковое меню (вертикальное) */
         #product_menu {
             width: 220px;
             background-color: #e0e0e0;
@@ -76,6 +74,7 @@
             background-color: #ddd;
         }
         
+        /* выделенный пункт сбоку */
         #product_menu a.selected {
             background-color: #2196F3;
             color: #fff;
@@ -86,7 +85,7 @@
             background-color: #1976D2;
         }
         
-        /* Основная область с таблицей умножения */
+        /* сама таблица */
         #content {
             flex: 1;
             padding: 30px;
@@ -97,7 +96,7 @@
             color: #333;
         }
         
-        /* Табличная верстка */
+        /*  стили таблицы  */
         table.multiplication-table {
             border-collapse: collapse;
             width: 100%;
@@ -114,7 +113,7 @@
             background-color: #f9f9f9;
         }
         
-        /* Блочная верстка */
+        /* стии блоков */
         .ttRow {
             display: inline-block;
             vertical-align: top;
@@ -139,7 +138,7 @@
             padding: 5px 0;
         }
         
-        /* Ссылки на числа в таблице */
+        /* ссылка на числа в таблице */
         .num-link {
             color: #2196F3;
             text-decoration: none;
@@ -151,7 +150,6 @@
             text-decoration: underline;
         }
         
-        /* Подвал */
         #footer {
             background-color: #333;
             color: #fff;
@@ -167,52 +165,58 @@
 <body>
 
 <?php
-// Функция выводит число как ссылку 
+/*превращает число в ссылку*/
 function outNumAsLink($x) {
     if ($x >= 2 && $x <= 9) {
+        // Ссылка передаёт параметр content, сохраняя текущий тип вёрстки (html_type)
         return '<a href="?content=' . $x . '" class="num-link">' . $x . '</a>';
     } else {
         return $x;
     }
 }
 
-// Функция выводит столбец таблицы умножения
+/*один столбец таблицы*/
 function outRow($n) {
     for ($i = 2; $i <= 9; $i++) {
+        // Используем outNumAsLink() для всех трёх чисел в строке
         echo outNumAsLink($n) . '×' . outNumAsLink($i) . '=' . outNumAsLink($i * $n) . '<br>';
     }
 }
 
-// Функция выводит таблицу умножения в табличной форме
+/* выводит в виде таблицы*/
 function outTableForm() {
     if (!isset($_GET['content'])) {
         // Выводим всю таблицу умножения (8 столбцов)
-        echo '<table class="multiplication-table"><tr>';
+        echo '<table class="multiplication-table">';
+        echo '<tr>';
         for ($i = 2; $i <= 9; $i++) {
             echo '<td>';
-            outRow($i);
+            outRow($i);      // выводим столбец для числа $i
             echo '</td>';
         }
-        echo '</tr></table>';
+        echo '</tr>';
+        echo '</table>';
     } else {
-        // Выводим один столбец
-        echo '<table class="multiplication-table"><tr><td>';
+        // Выводим один столбец (для выбранного числа)
+        echo '<table class="multiplication-table">';
+        echo '<tr><td>';
         outRow($_GET['content']);
-        echo '</td></tr></table>';
+        echo '</td></tr>';
+        echo '</table>';
     }
 }
 
-// Функция выводит таблицу умножения в блочной форме
+/* выводит блоками*/
 function outDivForm() {
     if (!isset($_GET['content'])) {
-        // Выводим всю таблицу умножения
+        // Выводим всю таблицу умножения: отдельный блок для каждого столбца
         for ($i = 2; $i <= 9; $i++) {
             echo '<div class="ttRow">';
             outRow($i);
             echo '</div>';
         }
     } else {
-        // Выводим один столбец
+        // Выводим один столбец в крупном блоке
         echo '<div class="ttSingleRow">';
         outRow($_GET['content']);
         echo '</div>';
@@ -220,25 +224,23 @@ function outDivForm() {
 }
 ?>
 
-<!-- Главное меню -->
+<!-- выбор типа вёрстки -->
 <div id="main_menu">
     <?php
-    // Формируем ссылку "Табличная верстка"
+    //  ссылка "Табличная верстка"
     echo '<a href="?html_type=TABLE';
-    // Добавляем параметр content, если он был передан (сопряжение меню)
     if (isset($_GET['content'])) {
         echo '&content=' . $_GET['content'];
     }
     echo '"';
-    // Выделяем ссылку, если параметр html_type равен TABLE
     if (isset($_GET['html_type']) && $_GET['html_type'] == 'TABLE') {
         echo ' class="selected"';
     }
     echo '>Табличная верстка</a>';
     
-    // Формируем ссылку "Блочная верстка"
+    //  ссылкf "Блочная верстка"
     echo '<a href="?html_type=DIV';
-    // Добавляем параметр content, если он был передан (сопряжение меню)
+    // Сохраняем текущий content, если он был передан
     if (isset($_GET['content'])) {
         echo '&content=' . $_GET['content'];
     }
@@ -251,33 +253,31 @@ function outDivForm() {
     ?>
 </div>
 
-<!-- Контейнер для бокового меню и контента -->
+
 <div id="container">
-    <!-- Боковое меню -->
+    <!-- Боковое меню  -->
     <div id="product_menu">
         <?php
-        // Ссылка "Всё" (таблица умножения полностью)
+        // Ссылка полная таблица
         echo '<a href="?';
-        // Добавляем параметр html_type, если он был передан (сопряжение меню)
+        // сохранение текущей вёрстки, если передано
         if (isset($_GET['html_type'])) {
             echo 'html_type=' . $_GET['html_type'];
         }
         echo '"';
-        // Выделяем ссылку, если параметр content не передан
         if (!isset($_GET['content'])) {
             echo ' class="selected"';
         }
         echo '>Всё</a>';
         
-        // Цикл для создания ссылок на таблицы умножения от 2 до 9
+        //  ссылки для чисел 
         for ($i = 2; $i <= 9; $i++) {
             echo '<a href="?content=' . $i;
-            // Добавляем параметр html_type, если он был передан (сопряжение меню)
             if (isset($_GET['html_type'])) {
                 echo '&html_type=' . $_GET['html_type'];
             }
             echo '"';
-            // Выделяем ссылку, если параметр content равен текущему значению
+            // Выделяем ссылку, если параметр равен текущему числу
             if (isset($_GET['content']) && $_GET['content'] == $i) {
                 echo ' class="selected"';
             }
@@ -290,7 +290,6 @@ function outDivForm() {
     <div id="content">
         <h2>
             <?php
-            // Заголовок в зависимости от выбранного содержимого
             if (!isset($_GET['content'])) {
                 echo 'Таблица умножения (полностью)';
             } else {
@@ -300,12 +299,11 @@ function outDivForm() {
         </h2>
         
         <?php
-        // Выводим таблицу умножения в зависимости от типа верстки
-        // если параметр не выбран используется табличная верстка
+        //  функция вывода в зависимости от типа вёрстки
         if (!isset($_GET['html_type']) || $_GET['html_type'] == 'TABLE') {
-            outTableForm();
+            outTableForm();   // Табличная вёрстка
         } else {
-            outDivForm();
+            outDivForm();     // блочная вёрстка
         }
         ?>
     </div>
@@ -318,14 +316,14 @@ function outDivForm() {
     } else {
         $s = 'Блочная верстка. ';
     }
-    
-    if (!isset($_GET['content'])) {
+        if (!isset($_GET['content'])) {
+
         $s .= 'Таблица умножения полностью. ';
     } else {
         $s .= 'Столбец таблицы умножения на ' . $_GET['content'] . '. ';
     }
     
-    echo '<p>' . $s . date('d.m.Y H:i:s', strtotime('+2 hours')) . '</p>';
+    echo '<p>' . $s . date('d.m.Y H:i:s', strtotime('+3 hours')) . '</p>';
     ?>
 </div>
 
