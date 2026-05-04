@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Ввод массива</title>
+<title>Ввод массива. Лаб 7. Роева 241-352.</title>
 
 <script>
 function setHTML(element, txt) {
